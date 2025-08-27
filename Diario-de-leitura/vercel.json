@@ -1,0 +1,7 @@
+{
+  "version": 2,
+  "framework": "angular",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist/diario-de-leitura/browser",
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+}
