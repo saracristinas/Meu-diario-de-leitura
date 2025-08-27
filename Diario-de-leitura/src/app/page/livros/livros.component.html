@@ -1,0 +1,93 @@
+<main class="livros" role="main">
+	<header class="livros__header">
+		<h1>Minha Estante de Livros</h1>
+		<p class="subtitle">Acompanhe suas leituras, descubra novos títulos e compartilhe suas experiências.</p>
+	</header>
+
+			<section class="livros__filtros-container">
+				<form class="livros__filtros" aria-label="Filtrar livros" (submit)="buscarLivro($event)">
+					<label for="busca">Buscar livro:</label>
+					<input id="busca" name="busca" type="search" [(ngModel)]="busca" placeholder="Digite o nome do livro ou autor" />
+					<button type="submit">Buscar</button>
+					<label for="statusFiltro">Filtrar por status:</label>
+					<select id="statusFiltro" name="statusFiltro" [(ngModel)]="statusFiltro">
+						<option value="Todos">Todos</option>
+						<option value="Lendo">Lendo</option>
+						<option value="Pausado">Pausado</option>
+						<option value="Lido">Lido</option>
+						<option value="Não iniciado">Não iniciado</option>
+					</select>
+				</form>
+			</section>
+
+		<section class="livros__lista">
+					<h2 *ngIf="!resultadoBusca">Meus Livros</h2>
+							<ul *ngIf="!resultadoBusca">
+								<li *ngFor="let livro of livrosFiltrados">
+							<article class="livro-card" itemscope itemtype="https://schema.org/Book">
+								<header>
+									<h3 itemprop="name">{{ livro.titulo }}</h3>
+									<p class="autor"><strong>Autor:</strong> <span itemprop="author">{{ livro.autor }}</span></p>
+								</header>
+								<section class="progresso">
+									<p><strong>Status:</strong> <span class="status">{{ livro.status }}</span></p>
+													<p><strong>Progresso:</strong> <span class="progresso-texto">{{ livro.paginasLidas }}/{{ livro.totalPaginas }} páginas</span></p>
+																	<form class="progresso-form" (submit)="atualizarPaginasLidas(livro, paginasInput.value); $event.preventDefault()" autocomplete="off">
+																		<label for="paginas-{{livro.titulo}}" class="sr-only">Informe a página atual</label>
+																		<span class="progresso-dica" title="Digite a página que você está lendo">página atual</span>
+																		<input #paginasInput type="number" min="0" [max]="livro.totalPaginas" [value]="livro.paginasLidas" id="paginas-{{livro.titulo}}" name="paginasLidas" placeholder="Página atual" />
+																		<button type="submit">Atualizar</button>
+																	</form>
+									<div class="progress-bar" role="progressbar" [attr.aria-valuenow]="(livro.paginasLidas/livro.totalPaginas*100) | number:'1.0-0'" aria-valuemin="0" aria-valuemax="100" aria-label="Progresso da leitura">
+										<div class="progress-bar__fill" [style.width.%]="(livro.paginasLidas/livro.totalPaginas)*100"></div>
+									</div>
+									<div class="livro-card__acoes">
+										<button *ngIf="podeIniciar(livro)" (click)="alterarStatus(livro, 'Lendo')">Iniciar leitura</button>
+										<button *ngIf="podeLer(livro)" (click)="alterarStatus(livro, 'Lendo')">Retomar</button>
+										<button *ngIf="podePausar(livro)" (click)="alterarStatus(livro, 'Pausado')">Pausar</button>
+										<button *ngIf="podeFinalizar(livro)" (click)="alterarStatus(livro, 'Lido')">Finalizar</button>
+										<button *ngIf="livro.status !== 'Não iniciado'" (click)="alterarStatus(livro, 'Não iniciado')">Reiniciar</button>
+									</div>
+								</section>
+								<footer>
+									<small>Última atualização: Agosto 2025</small>
+								</footer>
+							</article>
+						</li>
+					</ul>
+
+			<ng-container *ngIf="resultadoBusca">
+				<h2>Resultado da busca</h2>
+				<ul *ngIf="resultadoBusca.length > 0">
+								<li *ngFor="let livro of resultadoBusca">
+									<article class="livro-card" itemscope itemtype="https://schema.org/Book">
+										<header>
+											<h3 itemprop="name">{{ livro.titulo }}</h3>
+											<p class="autor"><strong>Autor:</strong> <span itemprop="author">{{ livro.autor }}</span></p>
+										</header>
+										<section class="progresso">
+											<p><strong>Status:</strong> <span class="status">{{ livro.status }}</span></p>
+											<p><strong>Progresso:</strong> <span class="progresso-texto">{{ livro.paginasLidas }}/{{ livro.totalPaginas }} páginas</span></p>
+											<div class="progress-bar" role="progressbar" [attr.aria-valuenow]="(livro.paginasLidas/livro.totalPaginas*100) | number:'1.0-0'" aria-valuemin="0" aria-valuemax="100" aria-label="Progresso da leitura">
+												<div class="progress-bar__fill" [style.width.%]="(livro.paginasLidas/livro.totalPaginas)*100"></div>
+											</div>
+											<div class="livro-card__acoes">
+												<button *ngIf="podeIniciar(livro)" (click)="alterarStatus(livro, 'Lendo')">Iniciar leitura</button>
+												<button *ngIf="podeLer(livro)" (click)="alterarStatus(livro, 'Lendo')">Retomar</button>
+												<button *ngIf="podePausar(livro)" (click)="alterarStatus(livro, 'Pausado')">Pausar</button>
+												<button *ngIf="podeFinalizar(livro)" (click)="alterarStatus(livro, 'Lido')">Finalizar</button>
+												<button *ngIf="livro.status !== 'Não iniciado'" (click)="alterarStatus(livro, 'Não iniciado')">Reiniciar</button>
+											</div>
+										</section>
+										<footer>
+											<small>Última atualização: Agosto 2025</small>
+										</footer>
+									</article>
+								</li>
+				</ul>
+				<div *ngIf="resultadoBusca.length === 0" class="livros__nao-encontrado">
+					<p>Não encontrei esse livro, talvez seja um livro novo? Ou gostaria de verificar e reler livros que já leu?</p>
+				</div>
+			</ng-container>
+		</section>
+	</main>

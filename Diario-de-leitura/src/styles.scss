@@ -1,0 +1,62 @@
+body{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+/* ===== THEME TOKENS (AA contrast) ===== */
+:root {
+  /* Neutros (light) */
+  --color-bg: #ffffff;
+  --color-fg: #111827;        /* slate-900 */
+  --color-muted: #4b5563;     /* slate-600 */
+  --color-border: #e5e7eb;    /* slate-200 */
+  --color-surface: #f8fafc;   /* slate-50 */
+  --color-surface-2: #eef2f7; /* off-white azuladinho p/ cards */
+
+  /* Brand teal */
+  --color-primary-700: #0f766e;
+  --color-primary-600: #0d9488;
+  --color-primary-500: #14b8a6;
+  --color-primary-400: #2dd4bf;
+
+  /* Estados */
+  --color-warn-bg: #fff8e1;
+  --color-warn-fg: #7a5900;
+  --color-warn-bd: #ffe08a;
+
+  /* Sombras */
+  --shadow: 0 6px 24px rgba(2, 6, 23, .08), 0 1px 3px rgba(2, 6, 23, .06);
+
+  /* Layout */
+  --radius: 12px;
+  --radius-sm: 8px;
+  --footer-h: 80px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Neutros (dark) */
+    --color-bg: #0b1220;         /* azul carvão */
+    --color-fg: #e5e7eb;         /* slate-200 */
+    --color-muted: #9aa4b2;      /* slate-400/300 */
+    --color-border: #273449;     /* slate-700-ish */
+    --color-surface: #0f172a;    /* slate-900 */
+    --color-surface-2: #111a2e;  /* um degrau acima p/ cards */
+
+    /* Brand teal (um pouco mais vibrante no dark) */
+    --color-primary-700: #10a39a;
+    --color-primary-600: #17b2a8;
+    --color-primary-500: #22d3c5;
+    --color-primary-400: #5fe7da;
+
+    --color-warn-bg: #2a2206;
+    --color-warn-fg: #ffd36a;
+    --color-warn-bd: #69510f;
+
+    --shadow: 0 10px 30px rgba(0,0,0,.45), 0 2px 8px rgba(0,0,0,.35);
+  }
+}
+
+/* Base */
+html, body { height: 100%; background: var(--color-bg); color: var(--color-fg); }
+body { padding-bottom: var(--footer-h); }

@@ -1,0 +1,46 @@
+.sobre {
+  padding: 2rem 1rem calc(6rem + 2vh) 1rem;
+  max-width: 900px;
+  margin: 0 auto;
+  color: var(--color-fg);
+}
+
+.sobre__header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+.sobre__header h1 {
+  font-size: 2.2rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  color: var(--color-fg);
+}
+.sobre__header .subtitle {
+  font-size: 1.15rem;
+  color: var(--color-muted);
+}
+
+.sobre section { margin-bottom: 2rem; }
+.sobre h2 {
+  font-size: 1.3rem;
+  color: var(--color-primary-600);
+  margin-bottom: .5rem;
+}
+.sobre ul {
+  list-style: disc inside;
+  margin: .5rem 0 0 1.5rem;
+  padding: 0;
+  color: var(--color-fg);
+}
+.sobre a {
+  color: var(--color-primary-600);
+  text-decoration: underline;
+  transition: color .2s;
+}
+.sobre a:hover, .sobre a:focus {
+  color: var(--color-primary-700);
+}
+
+@media (max-width: 768px) {
+  .sobre { padding: 1rem .5rem calc(6rem + 2vh) .5rem; }
+}
