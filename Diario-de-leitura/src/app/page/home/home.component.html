@@ -1,8 +1,35 @@
 <main class="home" role="main">
 	<section class="hero">
+		<img src="livros.webp" alt="Ilustração de uma estante de livros" class="hero-img" width="320" height="auto">
 		<h1>Bem-vindo ao Meu Diário de Leitura</h1>
 		<p class="subtitle">Organize, registre e compartilhe suas experiências literárias.</p>
 		<a routerLink="/livros" class="cta">Ver meus livros</a>
+	</section>
+
+		<!-- Passo a passo visual -->
+	<section class="how-it-works">
+		<h2>Como funciona?</h2>
+		<ol>
+			<li><strong>Cadastre</strong> seus livros e organize sua estante virtual.</li>
+			<li><strong>Registre</strong> seu progresso de leitura e anote insights.</li>
+			<li><strong>Acompanhe</strong> estatísticas e alcance suas metas!</li>
+		</ol>
+	</section>
+
+	<!-- Estatísticas rápidas -->
+	<section class="stats">
+			<div class="stats__item">
+				<span class="stats__number">{{ livrosCadastrados }}</span>
+				<span class="stats__label">Livros cadastrados</span>
+			</div>
+			<div class="stats__item">
+				<span class="stats__number">{{ livrosLidos }}</span>
+				<span class="stats__label">Livros lidos</span>
+			</div>
+			<div class="stats__item">
+				<span class="stats__number">{{ metaAno }}</span>
+				<span class="stats__label">Meta do ano</span>
+			</div>
 	</section>
 
 	<section class="features">
@@ -33,5 +60,15 @@
 			<p>"Agora consigo lembrar de todos os livros que já li e compartilhar dicas com amigos."</p>
 			<footer>— João Silva, professor</footer>
 		</blockquote>
+	</section>
+
+		<!-- Novidades -->
+	<section class="news">
+		<h2>Novidades em breve!!</h2>
+		<ul>
+			<li>Em breve você poderá exportar sua lista de livros em PDF.</li>
+			<li>Melhorias na visualização de gráficos de desempenho.</li>
+			<li>Correções de bugs e melhorias de performance.</li>
+		</ul>
 	</section>
 </main>
