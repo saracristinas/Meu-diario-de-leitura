@@ -1,0 +1,25 @@
+.mensagem-destaque {
+  background: var(--color-primary-400, #2dd4bf);
+  color: var(--color-bg, #fff);
+  padding: 1rem 1.5rem;
+  border-radius: var(--radius, 12px);
+  box-shadow: var(--shadow, 0 6px 24px rgba(2, 6, 23, .08));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 1rem 0;
+  font-size: 1.1rem;
+}
+.mensagem-destaque button {
+  background: var(--color-primary-700, #0f766e);
+  color: var(--color-bg, #fff);
+  border: none;
+  border-radius: var(--radius-sm, 8px);
+  padding: 0.4rem 1rem;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.2s;
+}
+.mensagem-destaque button:hover {
+  background: var(--color-primary-600, #0d9488);
+}

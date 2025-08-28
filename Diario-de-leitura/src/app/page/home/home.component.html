@@ -1,4 +1,5 @@
 <main class="home" role="main">
+	<app-mensagem-destaque *ngIf="mostrarMensagem" [mensagem]="mensagemDestaque" (fechar)="fecharMensagem()"></app-mensagem-destaque>
 	<section class="hero">
 		<img src="livros.webp" alt="Ilustração de uma estante de livros" class="hero-img" width="320" height="auto">
 		<h1>Bem-vindo ao Meu Diário de Leitura</h1>

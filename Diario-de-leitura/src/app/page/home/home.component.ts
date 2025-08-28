@@ -1,10 +1,11 @@
 import { Component, Inject, PLATFORM_ID } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser, CommonModule } from '@angular/common';
+import { MensagemDestaqueComponent } from '../../component/mensagem-destaque/mensagem-destaque.component';
 
 @Component({
   selector: 'app-home',
-  imports: [RouterModule],
+  imports: [CommonModule, RouterModule, MensagemDestaqueComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
@@ -12,6 +13,9 @@ export class HomeComponent {
   livrosCadastrados = 0;
   livrosLidos = 0;
   metaAno = 0;
+
+  mensagemDestaque = 'Bem-vindo! Aproveite para registrar suas leituras e acompanhar seu progresso.';
+  mostrarMensagem = true;
 
   private targetLivrosCadastrados = 120;
   private targetLivrosLidos = 45;
@@ -46,5 +50,9 @@ export class HomeComponent {
       }
     };
     step();
+  }
+
+  fecharMensagem() {
+    this.mostrarMensagem = false;
   }
 }
