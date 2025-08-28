@@ -1,6 +1,6 @@
 <header class="header" role="banner">
 	<div class="container">
-		<a routerLink="/" class="logo" aria-label="Página inicial do Meu Diário de Leitura">
+		<a routerLink="/" href="/" class="logo" aria-label="Página inicial do Meu Diário de Leitura">
 			<span>Meu Diário de Leitura</span>
 		</a>
 		<button
@@ -18,11 +18,11 @@
 				[class.open]="isMenuOpen"
 				(click)="closeMenu()"
 			>
-			<li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" aria-current="page">Início</a></li>
-			<li><a routerLink="/livros" routerLinkActive="active">Livros</a></li>
-			<li><a routerLink="/desempenho" routerLinkActive="active">Meu Desempenho</a></li>
-			<li><a routerLink="/sobre" routerLinkActive="active">Sobre</a></li>
-			<li><a routerLink="/contato" routerLinkActive="active">Contato</a></li>
+			<li><a routerLink="/" href="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" aria-current="page">Início</a></li>
+			<li><a routerLink="/livros" href="/livros" routerLinkActive="active">Livros</a></li>
+			<li><a routerLink="/desempenho" href="/desempenho" routerLinkActive="active">Meu Desempenho</a></li>
+			<li><a routerLink="/sobre" href="/sobre" routerLinkActive="active">Sobre</a></li>
+			<li><a routerLink="/contato" href="/contato" routerLinkActive="active">Contato</a></li>
 			</ul>
 		</nav>
 	</div>
