@@ -4,6 +4,7 @@ import { LivrosComponent } from './page/livros/livros.component';
 import { DesempenhoComponent } from './page/desempenho/desempenho.component';
 import { SobreComponent } from './page/sobre/sobre.component';
 import { ContatoComponent } from './page/contato/contato.component';
+import { UsuariosComponent } from './page/usuarios/usuarios.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent, title: 'Início — Meu Diário de Leitura' },
@@ -11,5 +12,6 @@ export const routes: Routes = [
   { path: 'desempenho', component: DesempenhoComponent, title: 'Meu Desempenho — Meu Diário de Leitura' },
   { path: 'sobre', component: SobreComponent, title: 'Sobre — Meu Diário de Leitura' },
   { path: 'contato', component: ContatoComponent, title: 'Contato — Meu Diário de Leitura' },
+  { path: 'usuarios', component: UsuariosComponent, title: 'Usuários — Meu Diário de Leitura' },
   { path: '**', redirectTo: '' }
 ];
