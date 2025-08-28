@@ -6,21 +6,31 @@
 	</header>
 
 	<section class="contato__formulario">
-		<form #contatoForm="ngForm" (ngSubmit)="onSubmit(contatoForm)" aria-label="Formulário de contato" autocomplete="off">
+		<form [formGroup]="contatoForm" (ngSubmit)="onSubmit()" aria-label="Formulário de contato" autocomplete="off">
 			<label for="nome">Nome:</label>
-			<input id="nome" name="nome" type="text" required [(ngModel)]="nome" placeholder="Seu nome completo" #nomeModel="ngModel" />
-			<div *ngIf="nomeModel.invalid && nomeModel.touched" class="erro">Nome é obrigatório.</div>
+			<input id="nome" type="text" formControlName="nome" placeholder="Seu nome completo" />
+			<div *ngIf="contatoForm.get('nome')?.invalid && contatoForm.get('nome')?.touched" class="erro">
+				Nome é obrigatório e deve ter pelo menos 2 caracteres.
+			</div>
 
 			<label for="email">E-mail:</label>
-			<input id="email" name="email" type="email" required [(ngModel)]="email" placeholder="seu@email.com" #emailModel="ngModel" email />
-			<div *ngIf="emailModel.invalid && emailModel.touched" class="erro">E-mail válido é obrigatório.</div>
+			<input id="email" type="email" formControlName="email" placeholder="seu@email.com" />
+			<div *ngIf="contatoForm.get('email')?.invalid && contatoForm.get('email')?.touched" class="erro">
+				E-mail válido é obrigatório.
+			</div>
 
 			<label for="mensagem">Mensagem:</label>
-			<textarea id="mensagem" name="mensagem" rows="5" required [(ngModel)]="mensagem" placeholder="Digite sua mensagem..." #mensagemModel="ngModel"></textarea>
-			<div *ngIf="mensagemModel.invalid && mensagemModel.touched" class="erro">Mensagem é obrigatória.</div>
+			<textarea id="mensagem" rows="5" formControlName="mensagem" placeholder="Digite sua mensagem..."></textarea>
+			<div *ngIf="contatoForm.get('mensagem')?.invalid && contatoForm.get('mensagem')?.touched" class="erro">
+				Mensagem é obrigatória e deve ter pelo menos 5 caracteres.
+			</div>
 
-			<button type="submit" [disabled]="contatoForm.invalid">Enviar</button>
-			<div *ngIf="enviado" class="sucesso">Mensagem enviada com sucesso!</div>
+				<button type="submit" [disabled]="contatoForm.invalid">Enviar</button>
+
+				<div *ngIf="showSuccess" class="success-toast" role="status" aria-live="polite">
+					<span class="icon">✔️</span>
+					Mensagem enviada com sucesso!
+				</div>
 		</form>
 	</section>
 </main>

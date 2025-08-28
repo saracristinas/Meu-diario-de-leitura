@@ -1,25 +1,36 @@
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-contato',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './contato.component.html',
   styleUrl: './contato.component.scss'
 })
 export class ContatoComponent {
-  nome: string = '';
-  email: string = '';
-  mensagem: string = '';
+  contatoForm: FormGroup;
   enviado: boolean = false;
+  showSuccess: boolean = false;
 
-  onSubmit(form: any) {
-    if (form.valid) {
+  constructor(private fb: FormBuilder) {
+    this.contatoForm = this.fb.group({
+      nome: ['', [Validators.required, Validators.minLength(2)]],
+      email: ['', [Validators.required, Validators.email]],
+      mensagem: ['', [Validators.required, Validators.minLength(5)]]
+    });
+  }
+
+  onSubmit() {
+    if (this.contatoForm.valid) {
       this.enviado = true;
+      this.showSuccess = true;
       // Aqui posso integrar com o back end
-      form.resetForm();
+      this.contatoForm.reset();
+      setTimeout(() => {
+        this.showSuccess = false;
+      }, 3500);
     }
   }
 }

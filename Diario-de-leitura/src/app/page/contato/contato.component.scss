@@ -1,3 +1,31 @@
+// Toast de sucesso flutuante
+.success-toast {
+  position: fixed;
+  top: 2.5rem;
+  right: 2.5rem;
+  z-index: 2000;
+  background: #2ecc40cb;
+  color: #fff;
+  padding: 1.1rem 2.2rem 1.1rem 1.7rem;
+  border-radius: 1.2rem;
+  box-shadow: 0 4px 24px rgba(44,204,64,0.18);
+  font-size: 1.15rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  animation: fadeInOut 3.5s forwards;
+}
+.success-toast .icon {
+  font-size: 1.5rem;
+  margin-right: 0.5rem;
+}
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(-20px); }
+  10% { opacity: 1; transform: translateY(0); }
+  90% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-20px); }
+}
 .contato {
   padding: 2rem 1rem 2rem 1rem;
   max-width: 600px;
