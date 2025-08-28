@@ -12,27 +12,32 @@ import { MensagemDestaqueComponent } from '../../component/mensagem-destaque/men
 export class HomeComponent {
   livrosCadastrados = 0;
   livrosLidos = 0;
-  metaAno = 0;
+  metaAno = 12;
 
   mensagemDestaque = 'Bem-vindo! Aproveite para registrar suas leituras e acompanhar seu progresso.';
   mostrarMensagem = true;
 
-  private targetLivrosCadastrados = 120;
-  private targetLivrosLidos = 45;
-  private targetMetaAno = 12;
+
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
-      this.animateCounter('livrosCadastrados', this.targetLivrosCadastrados, 900);
-      this.animateCounter('livrosLidos', this.targetLivrosLidos, 1200);
-      this.animateCounter('metaAno', this.targetMetaAno, 1500);
+      const livrosLS = localStorage.getItem('livros');
+      let livros: any[] = [];
+      if (livrosLS) {
+        livros = JSON.parse(livrosLS);
+      }
+      const total = livros.length;
+      const lidos = livros.filter(l => l.status === 'Lido').length;
+      this.animateCounter('livrosCadastrados', total, 900);
+      this.animateCounter('livrosLidos', lidos, 1200);
+      this.animateCounter('metaAno', this.metaAno, 1500);
     } else {
       // SSR: já mostra o valor final
-      this.livrosCadastrados = this.targetLivrosCadastrados;
-      this.livrosLidos = this.targetLivrosLidos;
-      this.metaAno = this.targetMetaAno;
+      this.livrosCadastrados = 0;
+      this.livrosLidos = 0;
+      this.metaAno = 12;
     }
   }
 
