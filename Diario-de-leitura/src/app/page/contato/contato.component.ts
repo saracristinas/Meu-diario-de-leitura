@@ -17,8 +17,7 @@ export class ContatoComponent {
   onSubmit(form: any) {
     if (form.valid) {
       this.enviado = true;
-      // Aqui você pode integrar com backend ou serviço de email
-      // Exemplo: this.http.post('/api/contato', { nome: this.nome, email: this.email, mensagem: this.mensagem })
+      // Aqui posso integrar com o back end
       form.resetForm();
     }
   }

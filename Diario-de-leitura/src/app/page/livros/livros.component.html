@@ -1,93 +1,216 @@
 <main class="livros" role="main">
+	<!-- Modal de edição -->
+	<div class="modal-overlay" *ngIf="modalEdicaoAberto">
+		<div class="modal">
+			<button class="modal-fechar" (click)="fecharModalEdicao()">&times;</button>
+			<h2>Editar Livro</h2>
+			<form (ngSubmit)="salvarEdicaoLivro()" #formEdicao="ngForm" autocomplete="off">
+				<label for="edit-titulo">Título *</label>
+				<input id="edit-titulo" name="edit-titulo" [(ngModel)]="livroEditando.titulo" required placeholder="Título" />
+				<label for="edit-autor">Autor *</label>
+				<input id="edit-autor" name="edit-autor" [(ngModel)]="livroEditando.autor" required placeholder="Autor" />
+				<label for="edit-editora">Editora</label>
+				<input id="edit-editora" name="edit-editora" [(ngModel)]="livroEditando.editora" placeholder="Editora" />
+				<label for="edit-sinopse">Sinopse</label>
+				<textarea id="edit-sinopse" name="edit-sinopse" [(ngModel)]="livroEditando.sinopse" placeholder="Sinopse"></textarea>
+				<label for="edit-paginas">Quantidade de páginas</label>
+				<input id="edit-paginas" name="edit-paginas" type="number" min="1" [(ngModel)]="livroEditando.totalPaginas" placeholder="Ex: 320" />
+				<label for="edit-trechos">Trechos Marcantes</label>
+				<textarea id="edit-trechos" name="edit-trechos" [(ngModel)]="livroEditando.trechos" placeholder="Trechos"></textarea>
+				<label for="edit-resenha">Adicionar resenha de hoje</label>
+				<textarea id="edit-resenha" name="edit-resenha" [(ngModel)]="livroEditando.resenha" placeholder="Digite sua resenha..."></textarea>
+				<div class="modal-botoes">
+					<button type="submit" [disabled]="formEdicao.invalid">Salvar</button>
+					<button type="button" (click)="fecharModalEdicao()">Cancelar</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<!-- Modal de exclusão -->
+	<div class="modal-overlay" *ngIf="modalExclusaoAberto">
+		<div class="modal">
+			<button class="modal-fechar" (click)="fecharModalExclusao()">&times;</button>
+			<h2>Excluir Livro</h2>
+			<p>Você deseja excluir este livro?</p>
+			<div class="modal-botoes">
+				<button type="button" (click)="confirmarExclusaoLivro()">Sim</button>
+				<button type="button" (click)="fecharModalExclusao()">Cancelar</button>
+			</div>
+		</div>
+	</div>
+		<section class="livros__filtros-container">
+			<form class="livros__filtros estilizada" aria-label="Filtrar livros" (submit)="buscarLivro($event)">
+				<div class="filtros-row filtros-row--top">
+					<div class="filtros-col filtros-col--grow">
+						<label for="busca">Buscar livro:</label>
+						<input id="busca" name="busca" type="search" [(ngModel)]="busca"
+							placeholder="Digite o nome do livro ou autor" />
+					</div>
+					<div class="filtros-col filtros-col--btns">
+						<button type="submit">Buscar</button>
+						<button type="button" class="btn-adicionar" (click)="abrirModal()">Adicionar Livro</button>
+					</div>
+				</div>
+				<div class="filtros-row filtros-row--bottom">
+					<div class="filtros-col filtros-col--grow">
+						<label for="statusFiltro">Filtrar por status:</label>
+						<select id="statusFiltro" name="statusFiltro" [(ngModel)]="statusFiltro">
+							<option value="Todos">Todos</option>
+							<option value="Lendo">Lendo</option>
+							<option value="Pausado">Pausado</option>
+							<option value="Lido">Lido</option>
+							<option value="Não iniciado">Não iniciado</option>
+						</select>
+					</div>
+				</div>
+			</form>
+		</section>
+
+	<div class="modal-overlay" *ngIf="modalAberto">
+		<div class="modal">
+			<button class="modal-fechar" (click)="fecharModal()">&times;</button>
+			<h2>Adicionar Nova Leitura</h2>
+			<form (ngSubmit)="adicionarLivro()" #formLivro="ngForm" autocomplete="off">
+				<label for="titulo">Título *</label>
+				<input id="titulo" name="titulo" [(ngModel)]="novoLivro.titulo" required
+					placeholder="Digite o título do livro" />
+
+				<label for="autor">Autor *</label>
+				<input id="autor" name="autor" [(ngModel)]="novoLivro.autor" required placeholder="Nome do autor" />
+
+				<label for="editora">Editora</label>
+				<input id="editora" name="editora" [(ngModel)]="novoLivro.editora" placeholder="Nome da editora" />
+
+				<label for="sinopse">Sinopse</label>
+				<textarea id="sinopse" name="sinopse" [(ngModel)]="novoLivro.sinopse"
+					placeholder="Descreva a história do livro..."></textarea>
+
+				<label for="paginas">Quantidade de páginas</label>
+				<input id="paginas" name="paginas" type="number" min="1" [(ngModel)]="novoLivro.paginas"
+					placeholder="Ex: 320" />
+
+				<label for="trechos">Trechos Marcantes</label>
+				<textarea id="trechos" name="trechos" [(ngModel)]="novoLivro.trechos"
+					placeholder="Digite cada trecho em uma linha separada..."></textarea>
+				<small>Separe cada trecho por linha para organizar melhor suas citações favoritas.</small>
+
+				<div class="modal-botoes">
+					<button type="submit" [disabled]="formLivro.invalid">Adicionar Livro</button>
+					<button type="button" (click)="fecharModal()">Cancelar</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
 	<header class="livros__header">
 		<h1>Minha Estante de Livros</h1>
 		<p class="subtitle">Acompanhe suas leituras, descubra novos títulos e compartilhe suas experiências.</p>
 	</header>
 
-			<section class="livros__filtros-container">
-				<form class="livros__filtros" aria-label="Filtrar livros" (submit)="buscarLivro($event)">
-					<label for="busca">Buscar livro:</label>
-					<input id="busca" name="busca" type="search" [(ngModel)]="busca" placeholder="Digite o nome do livro ou autor" />
-					<button type="submit">Buscar</button>
-					<label for="statusFiltro">Filtrar por status:</label>
-					<select id="statusFiltro" name="statusFiltro" [(ngModel)]="statusFiltro">
-						<option value="Todos">Todos</option>
-						<option value="Lendo">Lendo</option>
-						<option value="Pausado">Pausado</option>
-						<option value="Lido">Lido</option>
-						<option value="Não iniciado">Não iniciado</option>
-					</select>
-				</form>
-			</section>
-
-		<section class="livros__lista">
-					<h2 *ngIf="!resultadoBusca">Meus Livros</h2>
-							<ul *ngIf="!resultadoBusca">
-								<li *ngFor="let livro of livrosFiltrados">
-							<article class="livro-card" itemscope itemtype="https://schema.org/Book">
-								<header>
-									<h3 itemprop="name">{{ livro.titulo }}</h3>
-									<p class="autor"><strong>Autor:</strong> <span itemprop="author">{{ livro.autor }}</span></p>
-								</header>
-								<section class="progresso">
-									<p><strong>Status:</strong> <span class="status">{{ livro.status }}</span></p>
-													<p><strong>Progresso:</strong> <span class="progresso-texto">{{ livro.paginasLidas }}/{{ livro.totalPaginas }} páginas</span></p>
-																	<form class="progresso-form" (submit)="atualizarPaginasLidas(livro, paginasInput.value); $event.preventDefault()" autocomplete="off">
-																		<label for="paginas-{{livro.titulo}}" class="sr-only">Informe a página atual</label>
-																		<span class="progresso-dica" title="Digite a página que você está lendo">página atual</span>
-																		<input #paginasInput type="number" min="0" [max]="livro.totalPaginas" [value]="livro.paginasLidas" id="paginas-{{livro.titulo}}" name="paginasLidas" placeholder="Página atual" />
-																		<button type="submit">Atualizar</button>
-																	</form>
-									<div class="progress-bar" role="progressbar" [attr.aria-valuenow]="(livro.paginasLidas/livro.totalPaginas*100) | number:'1.0-0'" aria-valuemin="0" aria-valuemax="100" aria-label="Progresso da leitura">
-										<div class="progress-bar__fill" [style.width.%]="(livro.paginasLidas/livro.totalPaginas)*100"></div>
-									</div>
-									<div class="livro-card__acoes">
-										<button *ngIf="podeIniciar(livro)" (click)="alterarStatus(livro, 'Lendo')">Iniciar leitura</button>
-										<button *ngIf="podeLer(livro)" (click)="alterarStatus(livro, 'Lendo')">Retomar</button>
-										<button *ngIf="podePausar(livro)" (click)="alterarStatus(livro, 'Pausado')">Pausar</button>
-										<button *ngIf="podeFinalizar(livro)" (click)="alterarStatus(livro, 'Lido')">Finalizar</button>
-										<button *ngIf="livro.status !== 'Não iniciado'" (click)="alterarStatus(livro, 'Não iniciado')">Reiniciar</button>
-									</div>
-								</section>
-								<footer>
-									<small>Última atualização: Agosto 2025</small>
-								</footer>
-							</article>
-						</li>
-					</ul>
-
-			<ng-container *ngIf="resultadoBusca">
-				<h2>Resultado da busca</h2>
-				<ul *ngIf="resultadoBusca.length > 0">
-								<li *ngFor="let livro of resultadoBusca">
-									<article class="livro-card" itemscope itemtype="https://schema.org/Book">
-										<header>
-											<h3 itemprop="name">{{ livro.titulo }}</h3>
-											<p class="autor"><strong>Autor:</strong> <span itemprop="author">{{ livro.autor }}</span></p>
-										</header>
-										<section class="progresso">
-											<p><strong>Status:</strong> <span class="status">{{ livro.status }}</span></p>
-											<p><strong>Progresso:</strong> <span class="progresso-texto">{{ livro.paginasLidas }}/{{ livro.totalPaginas }} páginas</span></p>
-											<div class="progress-bar" role="progressbar" [attr.aria-valuenow]="(livro.paginasLidas/livro.totalPaginas*100) | number:'1.0-0'" aria-valuemin="0" aria-valuemax="100" aria-label="Progresso da leitura">
-												<div class="progress-bar__fill" [style.width.%]="(livro.paginasLidas/livro.totalPaginas)*100"></div>
-											</div>
-											<div class="livro-card__acoes">
-												<button *ngIf="podeIniciar(livro)" (click)="alterarStatus(livro, 'Lendo')">Iniciar leitura</button>
-												<button *ngIf="podeLer(livro)" (click)="alterarStatus(livro, 'Lendo')">Retomar</button>
-												<button *ngIf="podePausar(livro)" (click)="alterarStatus(livro, 'Pausado')">Pausar</button>
-												<button *ngIf="podeFinalizar(livro)" (click)="alterarStatus(livro, 'Lido')">Finalizar</button>
-												<button *ngIf="livro.status !== 'Não iniciado'" (click)="alterarStatus(livro, 'Não iniciado')">Reiniciar</button>
-											</div>
-										</section>
-										<footer>
-											<small>Última atualização: Agosto 2025</small>
-										</footer>
-									</article>
-								</li>
+	<section class="livros__lista">
+		<h2 *ngIf="!resultadoBusca">Meus Livros</h2>
+			<ng-container *ngIf="!resultadoBusca">
+				<ul *ngIf="livrosFiltrados().length > 0">
+					<li *ngFor="let livro of livrosFiltrados()">
+						<article class="livro-card" itemscope itemtype="https://schema.org/Book">
+							<div class="livro-card__top-actions">
+								<button class="icon-btn" title="Editar" (click)="abrirModalEdicao(livro)">
+									<img src="data:image/png;base64,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" alt="Editar" width="22" height="22" />
+								</button>
+								<button class="icon-btn" title="Excluir" (click)="abrirModalExclusao(livro)">
+									<img src="data:image/png;base64,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" alt="Excluir" width="22" height="22" />
+								</button>
+							</div>
+							<header>
+								<h3 itemprop="name">{{ livro.titulo }}</h3>
+								<p class="autor"><strong>Autor:</strong> <span itemprop="author">{{ livro.autor }}</span></p>
+							</header>
+							<section class="progresso">
+								<p><strong>Status:</strong> <span class="status">{{ livro.status }}</span></p>
+								<p><strong>Progresso:</strong> <span class="progresso-texto">{{ livro.paginasLidas }}/{{
+										livro.totalPaginas }} páginas</span></p>
+													<form class="progresso-form"
+														(submit)="atualizarPaginasLidas(livro, paginasTemp[livro.titulo]); $event.preventDefault()"
+														autocomplete="off">
+														<label for="paginas-{{livro.titulo}}" class="sr-only">Informe a página atual</label>
+														<span class="progresso-dica" title="Digite a página que você está lendo">página atual</span>
+														<input type="number" min="0" [max]="livro.totalPaginas"
+															[(ngModel)]="paginasTemp[livro.titulo]" id="paginas-{{livro.titulo}}" name="paginasLidas-{{livro.titulo}}"
+															placeholder="Página atual" />
+														<button type="submit">Atualizar</button>
+													</form>
+								<div class="progress-bar" role="progressbar"
+									[attr.aria-valuenow]="(livro.paginasLidas/livro.totalPaginas*100) | number:'1.0-0'"
+									aria-valuemin="0" aria-valuemax="100" aria-label="Progresso da leitura">
+									<div class="progress-bar__fill"
+										[style.width.%]="(livro.paginasLidas/livro.totalPaginas)*100"></div>
+								</div>
+								<div class="livro-card__acoes">
+									<button *ngIf="podeIniciar(livro)" (click)="alterarStatus(livro, 'Lendo')">Iniciar
+										leitura</button>
+									<button *ngIf="podeLer(livro)" (click)="alterarStatus(livro, 'Lendo')">Retomar</button>
+									<button *ngIf="podePausar(livro)" (click)="alterarStatus(livro, 'Pausado')">Pausar</button>
+									<button *ngIf="podeFinalizar(livro)"
+										(click)="alterarStatus(livro, 'Lido')">Finalizar</button>
+									<button *ngIf="livro.status !== 'Não iniciado'"
+										(click)="alterarStatus(livro, 'Não iniciado')">Reiniciar</button>
+								</div>
+							</section>
+							<footer>
+								<small>Última atualização: Agosto 2025</small>
+							</footer>
+						</article>
+					</li>
 				</ul>
-				<div *ngIf="resultadoBusca.length === 0" class="livros__nao-encontrado">
-					<p>Não encontrei esse livro, talvez seja um livro novo? Ou gostaria de verificar e reler livros que já leu?</p>
+				<div *ngIf="livrosFiltrados().length === 0" class="livros__vazio livros__vazio--centralizado">
+					<p class="vazio-msg">Sua biblioteca está vazia<br>Comece a construir seu diário de leituras adicionando o primeiro livro</p>
+					<button class="btn-adicionar" (click)="abrirModal()">Adicionar primeiro livro</button>
 				</div>
 			</ng-container>
-		</section>
-	</main>
+
+		<ng-container *ngIf="resultadoBusca">
+			<h2>Resultado da busca</h2>
+			<ul *ngIf="resultadoBusca.length > 0">
+				<li *ngFor="let livro of resultadoBusca">
+					<article class="livro-card" itemscope itemtype="https://schema.org/Book">
+						<header>
+							<h3 itemprop="name">{{ livro.titulo }}</h3>
+							<p class="autor"><strong>Autor:</strong> <span itemprop="author">{{ livro.autor }}</span>
+							</p>
+						</header>
+						<section class="progresso">
+							<p><strong>Status:</strong> <span class="status">{{ livro.status }}</span></p>
+							<p><strong>Progresso:</strong> <span class="progresso-texto">{{ livro.paginasLidas }}/{{
+									livro.totalPaginas }} páginas</span></p>
+							<div class="progress-bar" role="progressbar"
+								[attr.aria-valuenow]="(livro.paginasLidas/livro.totalPaginas*100) | number:'1.0-0'"
+								aria-valuemin="0" aria-valuemax="100" aria-label="Progresso da leitura">
+								<div class="progress-bar__fill"
+									[style.width.%]="(livro.paginasLidas/livro.totalPaginas)*100"></div>
+							</div>
+							<div class="livro-card__acoes">
+								<button *ngIf="podeIniciar(livro)" (click)="alterarStatus(livro, 'Lendo')">Iniciar
+									leitura</button>
+								<button *ngIf="podeLer(livro)" (click)="alterarStatus(livro, 'Lendo')">Retomar</button>
+								<button *ngIf="podePausar(livro)"
+									(click)="alterarStatus(livro, 'Pausado')">Pausar</button>
+								<button *ngIf="podeFinalizar(livro)"
+									(click)="alterarStatus(livro, 'Lido')">Finalizar</button>
+								<button *ngIf="livro.status !== 'Não iniciado'"
+									(click)="alterarStatus(livro, 'Não iniciado')">Reiniciar</button>
+							</div>
+						</section>
+						<footer>
+							<small>Última atualização: Agosto 2025</small>
+						</footer>
+					</article>
+				</li>
+			</ul>
+			<div *ngIf="resultadoBusca.length === 0" class="livros__nao-encontrado">
+				<p>Não encontrei esse livro, talvez seja um livro novo? Ou gostaria de verificar e reler livros que já
+					leu?</p>
+			</div>
+		</ng-container>
+	</section>
+</main>
