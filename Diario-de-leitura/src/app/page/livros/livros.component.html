@@ -13,12 +13,24 @@
 				<input id="edit-editora" name="edit-editora" [(ngModel)]="livroEditando.editora" placeholder="Editora" />
 				<label for="edit-sinopse">Sinopse</label>
 				<textarea id="edit-sinopse" name="edit-sinopse" [(ngModel)]="livroEditando.sinopse" placeholder="Sinopse"></textarea>
-				<label for="edit-paginas">Quantidade de páginas</label>
-				<input id="edit-paginas" name="edit-paginas" type="number" min="1" [(ngModel)]="livroEditando.totalPaginas" placeholder="Ex: 320" />
+				<label for="edit-paginas">Quantidade de páginas *</label>
+				<input id="edit-paginas" name="edit-paginas" type="number" min="1" [(ngModel)]="livroEditando.totalPaginas" required placeholder="Ex: 320" />
+				<label for="edit-genero">Gênero *</label>
+				<input id="edit-genero" name="edit-genero" [(ngModel)]="livroEditando.genero" required placeholder="Ex: Fantasia, Romance, etc." />
 				<label for="edit-trechos">Trechos Marcantes</label>
 				<textarea id="edit-trechos" name="edit-trechos" [(ngModel)]="livroEditando.trechos" placeholder="Trechos"></textarea>
 				<label for="edit-resenha">Adicionar resenha de hoje</label>
 				<textarea id="edit-resenha" name="edit-resenha" [(ngModel)]="livroEditando.resenha" placeholder="Digite sua resenha..."></textarea>
+
+				<label for="edit-arquivos">Capa/Arquivos (PDF, JPG, PNG)</label>
+				<input id="edit-arquivos" name="edit-arquivos" type="file" (change)="onEditFileChange($event)" multiple accept=".pdf,.jpg,.jpeg,.png" />
+				<div *ngIf="arquivosEditando.length > 0" class="arquivos-lista">
+					<p>Arquivos selecionados:</p>
+					<ul>
+						<li *ngFor="let arq of arquivosEditando">{{ arq.nome }}</li>
+					</ul>
+				</div>
+
 				<div class="modal-botoes">
 					<button type="submit" [disabled]="formEdicao.invalid">Salvar</button>
 					<button type="button" (click)="fecharModalEdicao()">Cancelar</button>
@@ -86,15 +98,27 @@
 				<textarea id="sinopse" name="sinopse" [(ngModel)]="novoLivro.sinopse"
 					placeholder="Descreva a história do livro..."></textarea>
 
-				<label for="paginas">Quantidade de páginas</label>
-				<input id="paginas" name="paginas" type="number" min="1" [(ngModel)]="novoLivro.paginas"
+				<label for="paginas">Quantidade de páginas *</label>
+				<input id="paginas" name="paginas" type="number" min="1" [(ngModel)]="novoLivro.paginas" required
 					placeholder="Ex: 320" />
+
+
+				<label for="genero">Gênero *</label>
+				<input id="genero" name="genero" [(ngModel)]="novoLivro.genero" required placeholder="Ex: Fantasia, Romance, etc." />
 
 				<label for="trechos">Trechos Marcantes</label>
 				<textarea id="trechos" name="trechos" [(ngModel)]="novoLivro.trechos"
 					placeholder="Digite cada trecho em uma linha separada..."></textarea>
 				<small>Separe cada trecho por linha para organizar melhor suas citações favoritas.</small>
 
+				<label for="arquivos">Arquivos (PDF, JPG, PNG)</label>
+				<input id="arquivos" name="arquivos" type="file" (change)="onFileChange($event)" multiple accept=".pdf,.jpg,.jpeg,.png" />
+				<div *ngIf="arquivosSelecionados.length > 0" class="arquivos-lista">
+					<p>Arquivos selecionados:</p>
+					<ul>
+						<li *ngFor="let arq of arquivosSelecionados">{{ arq.nome }}</li>
+					</ul>
+				</div>
 				<div class="modal-botoes">
 					<button type="submit" [disabled]="formLivro.invalid">Adicionar Livro</button>
 					<button type="button" (click)="fecharModal()">Cancelar</button>
@@ -114,8 +138,35 @@
 				<ul *ngIf="livrosFiltrados().length > 0">
 					<li *ngFor="let livro of livrosFiltrados()">
 						<article class="livro-card" itemscope itemtype="https://schema.org/Book">
-							<div class="livro-card__top-actions">
+							<div class="livro-card__capa">
+								<img *ngIf="getCapa(livro); else capaPadrao" [src]="getCapa(livro)" alt="Capa do livro {{livro.titulo}}" class="livro-capa-img" width="80" height="120"/>
+								<ng-template #capaPadrao>
+									<img src="assets/livros.webp" alt="Capa padrão" class="livro-capa-img" width="80" height="120"/>
+								</ng-template>
+							</div>
+						  <div class="livro-card__top-actions">
+								<button class="btn-ver-detalhes" type="button" (click)="abrirModalDetalhes(livro)">Ver detalhes</button>
 								<button class="icon-btn" title="Editar" (click)="abrirModalEdicao(livro)">
+<!-- Modal de Detalhes do Livro -->
+<div class="modal-overlay" *ngIf="modalDetalhesAberto">
+	<div class="modal">
+		<button class="modal-fechar" (click)="$event.stopPropagation(); fecharModalDetalhes()" aria-label="Fechar">&times;</button>
+		<h2>Detalhes do Livro</h2>
+		<div *ngIf="livroDetalhes">
+			<p><strong>Título:</strong> {{ livroDetalhes.titulo }}</p>
+			<p><strong>Autor:</strong> {{ livroDetalhes.autor }}</p>
+			<p *ngIf="livroDetalhes.editora"><strong>Editora:</strong> {{ livroDetalhes.editora }}</p>
+			<p *ngIf="livroDetalhes.genero"><strong>Gênero:</strong> {{ livroDetalhes.genero }}</p>
+			<p *ngIf="livroDetalhes.sinopse"><strong>Sinopse:</strong> {{ livroDetalhes.sinopse }}</p>
+			<p><strong>Páginas:</strong> {{ livroDetalhes.totalPaginas }}</p>
+			<p><strong>Páginas lidas:</strong> {{ livroDetalhes.paginasLidas }}</p>
+			<p><strong>Status:</strong> {{ livroDetalhes.status }}</p>
+			<p *ngIf="livroDetalhes.trechos"><strong>Trechos favoritos:</strong> {{ livroDetalhes.trechos }}</p>
+			<p><strong>Adicionado em:</strong> <ng-container *ngIf="livroDetalhes.dataAdicionado; else semDataDetalhes">{{ livroDetalhes.dataAdicionado | date:'dd/MM/yyyy HH:mm' }}</ng-container><ng-template #semDataDetalhes>--</ng-template></p>
+			<p *ngIf="livroDetalhes.ultimaAtualizacao"><strong>Última atualização:</strong> {{ livroDetalhes.ultimaAtualizacao | date:'dd/MM/yyyy HH:mm' }}</p>
+		</div>
+	</div>
+</div>
 									<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAhFBMVEX////u7u4AAADt7e309PT39/f5+fnv7+/+/v7y8vL7+/uqqqqenp6kpKR9fX1dXV1xcXGwsLC2tra8vLzk5ORqampJSUnb29seHh6Tk5NERETR0dEzMzOIiIjHx8cWFhZhYWE5OTlSUlIpKSmLi4slJSV5eXnV1dVYWFgLCwsSEhJGRkYKpYc4AAAMOklEQVR4nO1da2OjKhDFCD7oK21t0zRtmnZ3+9j7///f1URQcQZIJGZyr/NtiZ7OWXU4IB4YU8GjOnLdlNYtsVAtWayapGpKdBNJqIiFw5oYTgwnhhPDiSGptI7EMK6jhaWaWlgqWlgqiEJxFSJRoZt0i+g32c4jBcXUxYwTRV/qa56pJlE3xan+n8xVE9dNMUmo/RhGLSx14oFpjQY1MZwYTgxPDzUxxLEGlvjRoFiuIpF1JLpJtUjRb+KqhesmmlANVUAfRT19xA6VWgSgSMnlaWwxMZwYnj6tieF/jGHVVZQdXACGJDsxHiXZ7ocoOxAqVZFkdciobolUSyb0UaxuYblq4eogFgWH4jIr1svnlz9PZfx6eb6+K3jC9oLKBivvEGIShIrLf/Lb+dusG9+X+X5QZMcW5T242szA2KyyPaCoMkyTYg7z23Iszp4hz65wflUs+ZkzXNzYCc5mT8VZM1y4+JXxdqtzPz+Gdx4Eqzs1y30Y6p6xlZaKVlp1tOcL6uDBoTwJzmavWeTOiglqwW59Cf7Mlh7pN1RpvDCK2KUvwSpu98iKhvKO/W/RbbwVrqyojS32u4JlPPGzYijlBUzj+/N+fbv5Bf22PCuGDCT4cVvWSlkV4/tr4OfinBhCSu39XopcF63Fc++ATXY+DO8BgjdRrRpqKLnsHbLyH+OHY3gQFHQFl2U3Y0D1usuNg6EeC3M1PM71iFmPoYU+Sg/apWpJ1EEN1gFQQOZlXDIAqtef5LasUqvU0ldAS63mmu+p2lxQYJFZMhDKvJsvWQfKVG3qYp5WeYP94KVMYSjjWfwWbSgzKxIMYSXzUD68MJR87B5ZkGcIXsHf2+koGMoYP95RZwg+g7/yBGfIXjvHXlNnCEu1G1F2OhjU4qd96Dtxhtic06MUMQrV0TYvtBlCSmYXG8lRqE45/aOL6b6zGPqgI/aHtlnDx0RgUJ3/lycND/WHXisixH6LJPyhkGdQxY1IYCi5ah/2s1LLMoCsGqpKTMbhdKkLClYyXYo1Vhcq7jJ8inM0q9OOLTxG9FW56UPFsqNiyTL0mpOpyk2fYfa7wzAlyZB5zsmU5SY2oVL2p33IiyrjxBhCz+A3MBdzIyqKHSi+7hzxTJMhNB6cswKimJQ3ahsqzh46BywzigyhfvCa57wwX/rOduWmPbmcGSphLf0YAiU+NtIa0FsYUJCSeahmxsXXU/+Xsty0/7Py986vb0VuY3johxC281xQEryCr2x7VBa/AFexySDhzHi5+CBtKZzk3RM48TvnaQ1VABSrcqNUmznddiFtWZ1AecNKZi5TnRZIMdnd+2m/k+HcltX4DGElc83TFlQMPIs7dZP2J0w3jNg7YFDJ3Mi8A4WUmxh6dbPitBjCV1AaUAK6Uctywx56rXMW02IIdvQ8N6HEAur689/9xkLQYggSlGkPKk4WwFUEWF+VPR8lhmA/KFIAKhaQgOvFd5YOWYuhDwo1iwErGQRKLIByY8YXd2XVxPHXlyJFBoeC1E03FntkdXzljSiZ3AIFVdR23LmzGm9sgSoZK5SdoprNp8EQVzJWqOIPcFodtz5ZjcbQomSsUNkCGC/uonltSIKhRcnYodBO446R+hrBpmQcg2kOU7xkESWGEMFPpWQcDHP2DZx9wWK/rMZxjQCVjEy9oFIOrfe+kP5ZHd/qAS4yzNMigkHroK6YJOMagUzdl0XGB6r8e/3h0mx2v09WR1femJLxgkr5K3D21V5ZHZshqmR8oFIJPYO6oyfBEFcyHlA5XGT0QRQYWpSMB5SEikxrARQFhuDUvfSDyiX0VckdI+UaYVMyLqiUw1eQlGsERPA6U28w7FBwkbmopjfIuEbASibxXNggYIKUXCOQIpN6Qln6QRKuEbiS8YLKpUXJEPmWG1UyPlBwkVFKhgZDXMl4QGFFhhJDi5JxQ7mUDAmGFiXjhkKUDClPBZuScUGhSoYSQ7CjV0rGAYUqmSN5Xx7U84AEgQkRCApVMkOyCuwagRUZLyghP4Gzy/HggKwCu0ZgSib3k8s2JXNwVmHHFujErw8UXGSUkqHhuYcqGR8oh5IhwRBXMh5QLiVDgiGuZNxQiJJpBj8UGIIfSMrcDwpRMqS8L+Gpey+oGFUyIRjqnnHgyj2wo09SLyh8TibAesJArhHwpFOWeJ2cZPDEb6DUdAS3eiiLjBdUmkBX8HZwVkq1NQzVLRzI6qFSMl5Q0vZugoYjHf4K2wPKrmRIMIStHnYTv24orMhQYmhRMm4ol5IhwRD+rCD1gsKUDClnSJuScUIhSuZo+1scggV/VuCXFqpkBhtQBHONwJaRCC8orMgMNaAI6RqBFRkvqBRcZVF39EOyMlWbupihrB7KIuMFlYNXUL2j779sPYXrPDrx6wUFFhk9oifBEFcyHlBYkaHEEH4Gt0rGDeVSMiQYWpSMEwpTMqR2f7ApGRcUpmRI7W8BflaglIwLClUyx2F4UM8DKxk/qBSdkwlkyGT2h6GsHubCc51GAg94kVUgw70sGqrDrB6qDyQ9oOI0s3T0Awwo6qYgYwt04tdnQAAXGaVkaPjq46+wfdKyKxkKDG2fFbjTcikZEgxxJeNOC1MypHZ/sH0g6UoLfYVNiSHYD3JVJ+1QqJIZjyFQl+MuFmb10EsLKvGokhlqQOFiONDq4Zp5GkmYVg/buGPO8/b70mOQa4TD6oFZpVZqm7o/ovl5FepiDrZ6sMnlFFtGsktL5XDKsYWP1QOell3J0GDoZfWApuX4rIACQ9h+07R6QNJyKRkSDEEz//Vu8wVXWujELyWGayDFMj6K6hWtIy1UyZBiiOzZM/uZ88SRFqpkxtuH1GO+QDwCSe7iec3snRi2TuaIttJmf6gDXV8arYAkdSybEyEoy2cFOuWRNjhDNW4skcewjoe4voH6cjkVFiVDZ++82GqiWsb7Ykexl5b9A0lKDPv7ERix2lI003IoGUoMXQRnb/fV3zDTcigZOgx57GRYFg8ZG2lhSmbszSI9GArcrLl1FcsbtZMWuhiPHkPD7nX29gNkXsaivUQE/0DypPuQ9nue7Ro5Y+Hgp7gGLWPeW51sAKsHV1axP5RrTkBG3VK6ZGwB9XKzhwYqQT4r8Ld62HOmYphrhLEPwdZ76guyG1mWamN7WgCrh7106VDXCEOz7e6WpL+hTTmcqr8ftH5WMPpWim6GXS7v6jBArD7zqi4EsXoYlWH3jmu2kij6UmfOQlk9jMrwBU4158WHyeOnyANZPYzJcPG3k+taY5UPc4/iRxbI6mFMht2hU2ufhRKlf6OuAfvNQ6wexmTYnQhu7QZSClFemLcpwO8gq4eDGQK9hcM1wlA0c72yYbuEAKqofYKDDSiQVQxhXCN497IsM0MfQf1iJwZaPRx7FiMWxtDpS6h7pcZKIHXTisOsHsYbW8SJMUezSE2sL58rSJih4Z79oWtVgwX1fyoOtXoYkaGhaF5ZH2uB+28ebPUw4gjY2MPtAmCIX8TDrR7GY5gavcEaYiiQUf8Aq4fxGOZGoZEmwyRfLT9hD9UhVg+jzWL03vzWPU+UilJYxOur13eQXH1DH9FWeh8oq2uEoa2/65d++eJrOX+xum0Ps3pgkS2roK4RXRbVe1u5vnj9gFm1YqjVw1Dl7TuLwaTxaN05FIyKwVYPY40tLDv3+VzBc2C4707nuwhg9TAaQ5siwwkGsHoYiWEUO9+rARHE6mEkhrzw2H7BjDBWDyEZ6p6xvyZA2kdGyBUMYvVgySqka4R7AN+LUFYPAaOhCugjbB0NEo+bNQoVyvx8ABSkcZ1bhDTxfLVeCQsUCeXdwzImgzFu89f7KqM8tUARZQiu12vF35d/lqtFqYTFdjubgGmNxdCmaH7mF7e7bWwqZ/nQaY3EEPTFKePxYbkueNbDOj+Gov8YPn1crleSycS2wQ9dhrGBFXW4PV9f3lfn52m0feh8PpIIY0k8lCHqGqHfOv192Sy/iu0ftfozBLR6GMc1YvsBwd/55baglCdsG8daFBoQClfeYr5ZRyKrseqjxpLL44wtRLNU/z/K8JRpTQwnhhPD06c10izGCTuxkP1hQH8GmlAN1cH+DAGtHk7rGuGTFiGoieHEcGJ4eqj/F0OgLsf7YAW0ejiNa8QeXz2Qggr5locm1P9AeU8MJ4YTw5NDTQwnhvQZ/gsKOq+xVBCM6gAAAABJRU5ErkJggg==" alt="Editar" width="22" height="22" />
 								</button>
 								<button class="icon-btn" title="Excluir" (click)="abrirModalExclusao(livro)">
@@ -158,7 +209,13 @@
 								</div>
 							</section>
 							<footer>
-								<small>Última atualização: Agosto 2025</small>
+								<small>
+									Adicionado em:
+									<ng-container *ngIf="livro.dataAdicionado; else semData">
+										{{ livro.dataAdicionado | date:'dd/MM/yyyy HH:mm' }}
+									</ng-container>
+									<ng-template #semData>--</ng-template>
+								</small>
 							</footer>
 						</article>
 					</li>

@@ -8,90 +8,43 @@
         <h2>Minhas metas de leitura</h2>
 
         <form class="metas-form" autocomplete="off"
-            (submit)="onSalvarMetas($event, metaAnualInput.value, metaMensalInput.value, horasMesInput.value)">
+            (submit)="onSalvarMetas($event, metaAnualLivrosInput.value, metaAnualPaginasInput.value)">
             <div class="metas-form__grupo">
-                <label for="meta-anual">Meta anual:</label>
-                <input #metaAnualInput id="meta-anual" type="number" min="1" [value]="metaAnual"
+                <label for="meta-anual-livros">Meta anual de livros:</label>
+                <input #metaAnualLivrosInput id="meta-anual-livros" type="number" min="1" [value]="metaAnualLivros"
                     placeholder="Livros por ano" />
             </div>
-
             <div class="metas-form__grupo">
-                <label for="meta-mensal">Meta mensal:</label>
-                <input #metaMensalInput id="meta-mensal" type="number" min="0" [value]="metaMensal"
-                    placeholder="Livros por mês (opcional)" />
+                <label for="meta-anual-paginas">Meta anual de páginas:</label>
+                <input #metaAnualPaginasInput id="meta-anual-paginas" type="number" min="1" [value]="metaAnualPaginas"
+                    placeholder="Páginas por ano" />
             </div>
-
-            <div class="metas-form__grupo">
-                <label for="horas-mes">Horas de leitura por mês:</label>
-                <input #horasMesInput id="horas-mes" type="number" min="0" step="0.1" [(ngModel)]="horasPorMes"
-                    name="horasPorMes" placeholder="Ex: 10" />
-            </div>
-
             <button type="submit">Salvar metas</button>
         </form>
-
-        <p class="metas-dica">Defina objetivos anuais, mensais ou personalizados para se motivar a ler mais.</p>
+        <p class="metas-dica">Defina quantos livros e páginas você quer ler neste ano. O progresso será mostrado abaixo.</p>
     </section>
 
 
     <section class="desempenho__explicacao">
-        <h2>Como suas metas influenciam o gráfico</h2>
+        <h2>Progresso das metas</h2>
         <div class="explicacao-box">
-            <p><strong>Resumo das metas:</strong></p>
+            <p><strong>Metas para {{ currentYear }}:</strong></p>
             <ul>
-                <li *ngIf="metaAnual">Meta anual: {{ metaAnual }} livros</li>
-                <li *ngIf="metaMensal">Meta mensal: {{ metaMensal }} livros/mês</li>
-                <li *ngIf="horasPorMes">Tempo dedicado: {{ horasPorMes }} horas/mês</li>
+                <li *ngIf="metaAnualLivros">Livros: {{ livrosLidosAno }} / {{ metaAnualLivros }}<span *ngIf="metaAnualLivros"> — {{ metaAnualLivros - livrosLidosAno }} para atingir a meta!</span></li>
+                <li *ngIf="metaAnualPaginas">Páginas: {{ paginasLidasAno }} / {{ metaAnualPaginas }}<span *ngIf="metaAnualPaginas"> — {{ metaAnualPaginas - paginasLidasAno }} para atingir a meta!</span></li>
             </ul>
-
-            <p><strong>Distribuição:</strong></p>
-            <ul>
-                <li *ngIf="metaMensal">Sua meta mensal define teto/mês; respeitamos o limite anual e, se houver, a
-                    capacidade pelo tempo.</li>
-                <li *ngIf="!metaMensal">Sem meta mensal, a distribuição é equilibrada ao longo do ano, respeitando
-                    limites de tempo.</li>
-            </ul>
-
-            <p class="explicacao-detalhe">{{ explicacaoDetalhada }}</p>
-
-            <div *ngIf="recomendacaoAjuste" class="explicacao-recomendacao"
-                style="margin-top: 18px; padding: 16px; background: #fff3cd; color: #856404; border: 1.5px solid #ffeeba; border-radius: 8px; font-size: 1.08em; display: flex; align-items: flex-start; gap: 10px; box-shadow: 0 2px 8px rgba(255, 193, 7, 0.08);">
-                <span style="font-size: 1.5em; margin-right: 8px;">⚠️</span>
-                <span><strong>Atenção:</strong> {{ recomendacaoAjuste }}</span>
-            </div>
-        </div>
-    </section>
-
-    <section class="desempenho__graficos">
-        <h2>Leitura por mês</h2>
-
-        <div class="grafico-barra" aria-label="Gráfico de livros lidos por mês">
-            <div class="barra" *ngFor="let valor of leituraPorMes; let i = index"
-                [style.height.%]="(valorVisual(valor) / maxEscalaGrafico) * 100"
-                (mouseenter)="onBarMouseEnter(i, valorVisual(valor))" (mouseleave)="onBarMouseLeave()"
-                style="position: relative;">
-                <span>{{ meses[i] }}</span>
-
-                <div class="grafico-tooltip" *ngIf="tooltipMsg && hoveredIndex === i"
-                    style="position: absolute; top: -32px; left: 50%; transform: translateX(-50%); background: #222; color: #fff; padding: 4px 10px; border-radius: 6px; font-size: 0.9em; white-space: nowrap; z-index: 2; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
-                    {{ tooltipMsg }}
+            <div style="margin-top: 18px;">
+                <div *ngIf="metaAnualLivros">
+                    <label>Progresso de livros:</label>
+                    <progress [value]="progressoLivros" max="100"></progress> {{ progressoLivros }}%
+                </div>
+                <div *ngIf="metaAnualPaginas" style="margin-top: 10px;">
+                    <label>Progresso de páginas:</label>
+                    <progress [value]="progressoPaginas" max="100"></progress> {{ progressoPaginas }}%
                 </div>
             </div>
         </div>
-
-        <!-- 🆕 Mensagem explicativa para o usuário -->
-        <div class="grafico-instrucao"
-            style="margin-top:14px; padding:12px; background:#3c658e; border:1px solid #ddd; border-radius:6px; font-size:.95rem; line-height:1.5;">
-            <strong>Como usar este gráfico:</strong><br />
-            • Defina sua <em>meta anual</em> (livros no ano).<br />
-            • Se quiser, adicione uma <em>meta mensal</em> para limitar quantos livros por mês.<br />
-            • Informe <em>horas de leitura por mês</em> para calcular se seu tempo é suficiente.<br />
-            O gráfico mostra a <strong>distribuição efetiva</strong>: quanto você precisa ler em cada mês
-            para bater sua meta, respeitando os três filtros. Passe o mouse sobre as barras
-            para ver a quantidade exata.
-        </div>
     </section>
-
 
     <section class="desempenho__generos">
         <h2>Gêneros mais lidos</h2>
